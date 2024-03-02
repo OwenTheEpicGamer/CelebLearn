@@ -1,7 +1,9 @@
 from openai import OpenAI
 import os
 import easyocr
+import dotenv
 
+dotenv.load_dotenv(".env")
 openai_key = os.environ.get("OPENAI_API_KEY")
 client = OpenAI(api_key=openai_key)
 
