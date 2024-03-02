@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {useEffect, useState} from "react";
 import {
     Stack,
@@ -23,11 +23,16 @@ import {
     Divider
 } from "@mui/material";
 import axios from 'axios';
+import ReactDOM from 'react-dom';
+import {useNavigate} from "react-router-dom";
+
 
 export default function HomePage() {
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    let navigate = useNavigate();
+    const [selectedFile, setSelectedFile] = useState()
+    const [response, setResponse] = useState()
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (event) => {
         if (event.target.files && event.target.files.length > 0) {
             console.log(event.target.files[0]);
 
@@ -44,14 +49,20 @@ export default function HomePage() {
         const formData = new FormData();
         formData.append('file', selectedFile);
 
-        axios.post('/api/upload', formData)
+        axios.post('http://localhost:8080/api/upload', formData)
             .then(response => {
+                console.log(response);
                 console.log('File uploaded successfully');
+                setResponse(response);
             })
             .catch(error => {
                 console.error('Error uploading file:', error);
             });
     };
+
+    if (response.data.message) {
+        navigate('/video')
+    }
 
     return (
         <>

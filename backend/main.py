@@ -56,15 +56,17 @@ async def test(req: Request):
     print(data)
     return {"data": "asdas"}
 
-@app.get("/api/upload")
+
+@app.post("/api/upload")
 async def upload_file(file: UploadFile):
     if not file:
-        return JSONResponse(status_code=400, content={"message": "No file received"})
+        return JSONResponse(status_code=400, content={"message": False})
 
-    with open("uploaded_file.txt", "wb") as buffer:
+    with open("./assets/uploaded_file.pdf", "wb") as buffer:
         buffer.write(await file.read())
+        print("File uploaded and written")
 
-    return {"message": "File uploaded successfully"}
+    return {"message": True}
 
 
 @app.get("/api/summary")
