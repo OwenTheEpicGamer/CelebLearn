@@ -2,6 +2,11 @@ from openai import OpenAI
 import os
 import dotenv
 import PyPDF2
+from pathlib import Path
+from openai import OpenAI
+
+client = OpenAI()
+
 
 dotenv.load_dotenv(".env")
 openai_key = os.environ.get("OPENAI_API_KEY")
@@ -37,6 +42,17 @@ completion = client.chat.completions.create(
 
 summary = completion.choices[0].message.content
 
+# Input summary, turns it into a mp3 file
+speech_file_path = Path(__file__).parent / "speech.mp3"
+response = client.audio.speech.create(
+    model="tts-1",
+    voice="alloy",
+    input=summary,
+)
+
+response.stream_to_file(speech_file_path)
+
+# Turns everything into 5 keywords
 completion2 = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
