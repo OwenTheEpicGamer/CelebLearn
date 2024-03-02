@@ -53,12 +53,19 @@ response = client.audio.speech.create(
 response.stream_to_file(speech_file_path)
 
 # Turns everything into 5 keywords
+
+person = "obama"
+
 completion2 = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
         {
             "role": "system",
-            "content": "You are a tutor who takes a summary and turns it into 5 keywords",
+            "content": (
+                "You are ",
+                person,
+                "tutoring who takes a summary and turns it into 5 keywords",
+            ),
         },
         {"role": "user", "content": summary},
     ],

@@ -14,6 +14,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import PyPDF2
 from starlette.responses import JSONResponse
+import cv2
+import requests
 
 dotenv.load_dotenv(".env")
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -67,6 +69,14 @@ async def upload_file(file: UploadFile):
         print("File uploaded and written")
 
     return {"message": True}
+
+
+@app.post("/api/video")
+async def lipsync():
+    url = "https://api.synclabs.so/video/obama"
+    headers = {"x-api-key": "4e2ba9af-22ca-4c5b-9c0d-8061f3fe4213"}
+    response = requests.request("GET", url, headers=headers)
+    print(response.text)
 
 
 @app.get("/api/summary")
