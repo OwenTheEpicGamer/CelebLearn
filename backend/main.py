@@ -12,7 +12,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 dotenv.load_dotenv(".env")
-print(os.getcwd())
 openai.api_key = os.environ["OPENAI_API_KEY"]
 MODEL = "gpt-3.5-turbo"
 
@@ -45,7 +44,7 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.post("/test")
+@app.post("/api/test")
 async def test(req: Request):
     # print(data)
     data = await req.json()
