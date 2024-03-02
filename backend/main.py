@@ -7,11 +7,13 @@ import dotenv
 import os
 import uvicorn
 from fastapi import FastAPI, Request
+from fastapi import UploadFile
 import openai
 from openai import OpenAI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import PyPDF2
+from starlette.responses import JSONResponse
 
 dotenv.load_dotenv(".env")
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -53,6 +55,16 @@ async def test(req: Request):
     data = await req.json()
     print(data)
     return {"data": "asdas"}
+
+@app.get("/api/upload")
+async def upload_file(file: UploadFile):
+    if not file:
+        return JSONResponse(status_code=400, content={"message": "No file received"})
+
+    with open("uploaded_file.txt", "wb") as buffer:
+        buffer.write(await file.read())
+
+    return {"message": "File uploaded successfully"}
 
 
 @app.get("/api/summary")
