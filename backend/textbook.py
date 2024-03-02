@@ -1,49 +1,66 @@
 from openai import OpenAI
 import os
-import easyocr
 import dotenv
+import PyPDF2
 
 dotenv.load_dotenv(".env")
 openai_key = os.environ.get("OPENAI_API_KEY")
 client = OpenAI(api_key=openai_key)
 
-reader = easyocr.Reader(["en"])
-result = reader.readtext("image1.png")
-summary = ""  # "chemistry is made of protons, neutrons, electrons, muons. it involves the study of macroscopic particles"
 
-for bbox, text, prob in result:
-    summary += text
+# Extract text from PDF
+def extract_text_from_pdf(pdf_path):
+    text = ""
+    with open(pdf_path, "rb") as file:
+        reader = PyPDF2.PdfReader(file)
+        num_pages = len(reader.pages)
+        for page_num in range(num_pages):
+            page = reader.pages[page_num]
+            text += page.extract_text()
+    return text
 
+
+pdf_path = "backend/assets/celeb.pdf"
+extracted_text = extract_text_from_pdf(pdf_path)
+
+# Takes text from PDF and turns it into a summary
 completion = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
         {
             "role": "system",
-            "content": "You are a tutor who takes a summary and turns it into a list a 5 key words to supplement the study method blurting",
+            "content": "You are a tutor who takes a textbook and summarizes it in 50 words",
+        },
+        {"role": "user", "content": extracted_text},
+    ],
+)
+
+summary = completion.choices[0].message.content
+
+completion2 = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {
+            "role": "system",
+            "content": "You are a tutor who takes a summary and turns it into 5 keywords",
         },
         {"role": "user", "content": summary},
     ],
 )
 
+items = completion2.choices[0].message.content.split("\n")
 keywords = []
-
-items = completion.choices[0].message.content.split("\n")
 for item in items:
     if item.strip():
         keywords.append((item.split(". ")[-1]))
 
-
-audio_file = open("audio2.m4a", "rb")
+audio_file = open("backend/assets/audio3.m4a", "rb")
 transcript = client.audio.transcriptions.create(
     model="whisper-1", file=audio_file, response_format="json"
 )
 
-# transcript = "Input text: Protons, electrons, neutrons, muons are important."
-
-# print(
-# "Summary Text: chemistry is made of protons, neutrons, electrons, muons. it involves the study of macroscopic particles",
-# )
-print(transcript.text)
+print("Summary: ", summary)
+print("Transcript: ", transcript.text)
 count = 0
 
 for x in keywords:
