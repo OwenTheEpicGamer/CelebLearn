@@ -88,7 +88,7 @@ sf.write('./out.wav', audio, sr, format='wav')
 
 
 # Set up paths and variables for the output file
-output_file_path = './results/video.mp4'
+output_file_path = './results/obama.mp4'
 
 # Delete existing output file before processing, if any
 if os.path.exists(output_file_path):
@@ -113,7 +113,7 @@ import subprocess
 if nosmooth:
     print(subprocess.run(["pwd"], shell=True))
 
-    # subprocess.run(["python3", "../Wav2Lip/inference.py", f"--{checkpoint_path}", f"{checkpoint_path}", "--face", './results/video.mp4', "--audio", "./out.wav", f"--pads", f"{pad_top}", f"{pad_bottom}", f"{pad_left}", f"{pad_right}", f"--resize_factor", f"{rescaleFactor}"])
+    # subprocess.run(["python3", "../Wav2Lip/inference.py", f"--{checkpoint_path}", f"{checkpoint_path}", "--face", './results/obama.mp4', "--audio", "./out.wav", f"--pads", f"{pad_top}", f"{pad_bottom}", f"{pad_left}", f"{pad_right}", f"--resize_factor", f"{rescaleFactor}"])
     print("asd")
 
     command = [

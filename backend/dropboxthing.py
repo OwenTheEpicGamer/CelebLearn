@@ -2,23 +2,29 @@ import os
 import dropbox
 import dropbox.files
 import requests
+import dotenv
 
-with open("backend/TOKEN.txt", "r") as f:
-    TOKEN = f.read()
+dotenv.load_dotenv(".env")
 
-dbx = dropbox.Dropbox(TOKEN)
-
-
-def upload_all_local_files():
-    for file in os.listdir("backend/videoaudio"):
-        with open(os.path.join("backend/videoaudio", file), "rb") as f:
-            data = f.read()
-            dbx.files_upload(data, f"/{file}")
+dbx = dropbox.Dropbox(os.environ["DROPBOX_KEY"])
 
 
-upload_all_local_files()
+def upload_all_local_files(character):
+    for file in os.listdir("./videoaudio"):
+        with open(os.path.join("./videoaudio", file), "rb") as f:
+            if f.name.endswith(".mp4") and f.name.__contains__(character):
+                data = f.read()
+                dbx.files_upload(data, f"/obama.mp4")
+            elif f.name.endswith(".mp3"):
+                data = f.read()
+                dbx.files_upload(data, f"/audio.mp3")
+            else:
+                continue
 
-access_token = TOKEN
+upload_all_local_files("walter")
+
+
+access_token = os.environ["DROPBOX_KEY"]
 
 url = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings"
 headers = {
@@ -27,7 +33,7 @@ headers = {
 }
 
 data = {
-    "path": "/audio.wav",
+    "path": "/audio.mp3",
     "settings": {
         "access": "viewer",
         "allow_download": True,
@@ -36,16 +42,13 @@ data = {
     },
 }
 
-
 response1 = requests.post(url, headers=headers, json=data)
 response_data = response1.json()
 url = response_data["url"]
 
 index_of_com = url.find(".com")
-after_com = url[index_of_com + len(".com") :]
+after_com = url[index_of_com + len(".com"):]
 new_link = "https://dl.dropboxusercontent.com" + after_com
-print(new_link)
-
 
 url = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings"
 headers = {
@@ -54,7 +57,7 @@ headers = {
 }
 
 data = {
-    "path": "/video.mp4",
+    "path": "/obama.mp4",
     "settings": {
         "access": "viewer",
         "allow_download": True,
@@ -68,6 +71,8 @@ response_data2 = response2.json()
 url = response_data2["url"]
 
 index_of_com = url.find(".com")
-after_com = url[index_of_com + len(".com") :]
+after_com = url[index_of_com + len(".com"):]
 new_link = "https://dl.dropboxusercontent.com" + after_com
 print(new_link)
+
+
