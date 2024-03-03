@@ -4,6 +4,8 @@ import dotenv
 import PyPDF2
 from pathlib import Path
 from openai import OpenAI
+import requests
+
 
 client = OpenAI()
 
