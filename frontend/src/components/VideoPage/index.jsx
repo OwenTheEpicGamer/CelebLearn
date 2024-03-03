@@ -58,7 +58,7 @@ export default function VideoPage() {
 
     return (
         <>
-            <div>
+            <div >
                 <ReactPlayer
                     url={texts[0]}
                     controls/>

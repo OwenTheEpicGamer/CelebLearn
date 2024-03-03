@@ -107,13 +107,6 @@ const AudioRecorder = () => {
         const intersection = keywords.filter(element => transcript.includes(element));
         console.log(intersection);
 
-
-        // if (transcript) {
-        //     transcript.diff(keywords);
-        //     const intersection = keywords.filter(element => transcript.includes(element));
-        //
-        //
-        // }
     };
 
     return (
@@ -123,7 +116,7 @@ const AudioRecorder = () => {
             </Button>
             <Button onClick={stopRecording} variant="contained" disabled={!isRecording}>
                 Stop Recording
-            </Button>S
+            </Button>
             <Button onClick={handleSaveRecording} variant="contained">
                 Save Recording
             </Button>
