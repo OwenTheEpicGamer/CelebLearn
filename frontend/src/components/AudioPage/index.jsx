@@ -1,6 +1,31 @@
 import React, {useState, useRef, useEffect} from 'react';
-import axios from "axios";
+import axios, {interceptors} from "axios";
 import lamejs from 'lamejs';
+import {
+    Paper,
+    Card,
+    CardMedia,
+    Switch,
+    Chip,
+    Rating,
+    Grid,
+    FormControlLabel,
+    Checkbox,
+    FormGroup,
+    Box,
+    Button,
+    CircularProgress,
+    IconButton,
+    InputAdornment,
+    TextField,
+    Typography,
+    Divider,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem
+} from "@mui/material";
+
 
 const AudioRecorder = () => {
     const [audioChunks, setAudioChunks] = useState([]);
@@ -32,6 +57,7 @@ const AudioRecorder = () => {
     };
 
     const [keywords, setKeywords] = useState([]);
+    const [intersection, setIntersection] = useState([])
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/keywords')
@@ -52,6 +78,17 @@ const AudioRecorder = () => {
         );
     }
 
+    Array.prototype.diff = function (arr2) {
+        var ret = [];
+        for (var i in this) {
+            if (arr2.indexOf(this[i]) > -1) {
+                ret.push(this[i]);
+            }
+        }
+        return ret;
+    };
+
+
     const stopRecording = () => {
         setIsRecording(false);
         if (recognition) {
@@ -62,55 +99,36 @@ const AudioRecorder = () => {
             console.log(transcriptList);
 
         }
+
+
     };
 
     const handleSaveRecording = async () => {
-        if (audioChunks.length === 0) {
-            console.warn('No audio recorded');
-            return;
-        }
+        const intersection = keywords.filter(element => transcript.includes(element));
+        console.log(intersection);
 
-        // Encode audio chunks to MP3
-        const mp3Encoder = new lamejs.Mp3Encoder(1, 44100, 128);
-        const pcmData = audioChunks.map(chunk => new Int16Array(chunk));
-        const mp3Data = mp3Encoder.encodeBuffer(pcmData.flat());
 
-        // Create Blob from encoded MP3 data
-        const mp3Blob = new Blob([new Uint8Array(mp3Data)], {type: 'audio/mp3'});
-
-        // Upload MP3 file to backend endpoint
-        if (transcript) {
-
-            // try {
-            //     const formData = new FormData();
-            //     formData.append('audio', mp3Blob, 'recorded_audio.mp3');
-            //     await axios.post('http://localhost:8080/api/upload_audio', formData, {
-            //         headers: {
-            //             'Content-Type': 'multipart/form-data',
-            //         },
-            //     });
-            //     console.log('Recording uploaded successfully');
-            // } catch (error) {
-            //     console.error('Error uploading recording:', error);
-            // }
-        }
-
-        // Reset state for next recording
-        setAudioChunks([]);
+        // if (transcript) {
+        //     transcript.diff(keywords);
+        //     const intersection = keywords.filter(element => transcript.includes(element));
+        //
+        //
+        // }
     };
 
     return (
         <div>
-            <button onClick={startRecording} disabled={isRecording}>
+            <Button onClick={startRecording} variant="contained" disabled={isRecording}>
                 Start Recording
-            </button>
-            <button onClick={stopRecording} disabled={!isRecording}>
+            </Button>
+            <Button onClick={stopRecording} variant="contained" disabled={!isRecording}>
                 Stop Recording
-            </button>
-            <button onClick={handleSaveRecording} disabled={audioChunks.length === 0}>
+            </Button>S
+            <Button onClick={handleSaveRecording} variant="contained">
                 Save Recording
-            </button>
+            </Button>
             <p>Transcript: {transcript}</p>
+            <p>Matches: {intersection}</p>
         </div>
     );
 };

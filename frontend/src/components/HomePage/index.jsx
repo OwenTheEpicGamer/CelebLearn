@@ -3,7 +3,6 @@ import {useEffect, useState} from "react";
 import {
     Stack,
     Paper,
-    Link,
     Card,
     CardMedia,
     Switch,
@@ -28,8 +27,10 @@ import {
 } from "@mui/material";
 import axios from 'axios';
 import ReactDOM from 'react-dom';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Link} from "react-router-dom";
 import {SelectChangeEvent} from '@mui/material/Select';
+
+import { useParams } from 'react-router-dom';
 
 
 export default function HomePage() {
@@ -69,21 +70,22 @@ export default function HomePage() {
         }
 
 
-        const formData = new FormData();
+        let formData = new FormData();
         formData.append('file', selectedFile);
         formData.append('character', character);
         console.log(formData);
-
 
         axios.post('http://localhost:8080/api/upload', formData)
             .then(response => {
                 console.log(response);
                 console.log('File uploaded successfully');
                 setResponse(response);
+                navigate(`/video`)
             })
             .catch(error => {
                 console.error('Error uploading file:', error);
             });
+
     };
 
     // if (response.data.message) {
@@ -91,8 +93,8 @@ export default function HomePage() {
     // }
 
     return (
-        <>
-            <Box className={'flex flex-row'}>
+        <div className={"flex"}>
+            <Box className={'m-auto flex flex-row'}>
                 <Box className={"w=1/2"}>
                     <Box className={'flex flex-col gap-10'}>
                         <title>
@@ -131,6 +133,6 @@ export default function HomePage() {
 
                 </Box>
             </Box>
-        </>
+        </div>
     );
 }

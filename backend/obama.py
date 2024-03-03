@@ -2,7 +2,7 @@ from rvc_python.infer import infer_file, infer_files
 
 # To process a single file:
 result = infer_file(
-    input_path="./speech.mp3",
+    input_path="videoaudio/speech.mp3",
     model_path="./model/model.pth",
     index_path="",  # Optional: specify path to index file if available
     device="cpu:0",  # Use cpu or cuda
