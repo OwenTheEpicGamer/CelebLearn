@@ -5,7 +5,7 @@ url = "https://api.synclabs.so/video"
 payload = {
     "audioUrl": "https://drive.google.com/file/d/1FvPblbdPc0_rXliiszsqd9iQHOQjcAQi/view?usp=sharing",
     "maxCredits": 123,
-    "model": "sync-1.5.0",
+    "model": "wav2lip++",
     "synergize": True,
     "videoUrl": "https://drive.google.com/file/d/1VhEa81-XqYv5RDehvkwVVEAggLqLN0iP/view?usp=sharing",
     "webhookUrl": "",
@@ -15,6 +15,6 @@ headers = {
     "Content-Type": "application/json",
 }
 
-response = requests.request("POST", url, json=payload, headers=headers)
+response = requests.request("GET", url, json=payload, headers=headers)
 
 print(response.text)
